@@ -7,12 +7,19 @@ using UnityEngine.Tilemaps;
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rbody;
-    private Inventory inventory;
+    public Inventory inventory;
     public GameObject player;
     public bool isGrounded;
     private GameObject LCont;
     private Transform LadderContainer;
     private Transform LadderTamplate;
+    private GameObject Map;
+    private Transform BlankBlockTamplate;
+    private Transform BlocksContainer;
+
+    public int coordXToDistroy = -1;
+    public int coordYToDistroy = -1;
+    public int pickMultiplier = 1;
 
     [SerializeField] private InventoryUi inventoryui;
 
@@ -26,11 +33,24 @@ public class PlayerMovement : MonoBehaviour
         LadderTamplate = LCont.transform.GetChild(0);
         LadderTamplate = LadderContainer.transform.GetChild(0);
 
+
+        Map = GameObject.Find("Map");
+        BlocksContainer = Map.transform;
+        BlankBlockTamplate = Map.transform.GetChild(0);
+        
+
         //ItemWorld.SpawnItemWorld(new Vector3Int(0, -3, 0), new Item { itemType = Item.ItemType.Pick, amount = 1 });
         //ItemWorld.SpawnItemWorld(new Vector3Int(0, -3, 0), new Item { itemType = Item.ItemType.Coin, amount = 50 });
-        inventory.AddItem(new Item { itemType = Item.ItemType.Pick, amount = 1 });
-        inventory.AddItem(new Item { itemType = Item.ItemType.Coin, amount = 100 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.PickLvL0, amount = 1 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.Coin, amount = 800 });
         inventory.AddItem(new Item { itemType = Item.ItemType.Ladder, amount = 10 });
+        
+        /*inventory.AddItem(new Item { itemType = Item.ItemType.PickLvL1, amount = 1 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.PickLvL2, amount = 1 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.PickLvL3, amount = 1 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.PickLvL4, amount = 1 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.PickLvL0, amount = 1 });
+        inventory.AddItem(new Item { itemType = Item.ItemType.PickLvL0, amount = 1 });*/
 
     }
 
@@ -45,10 +65,37 @@ public class PlayerMovement : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collider)
     {
         ItemWorld itemWorld = collider.GetComponent<ItemWorld>();
-        if (itemWorld != null)
+        Item item;
+        
+        if (inventory.GetItemList().Count < 9)
         {
-            inventory.AddItem(itemWorld.GetItem());
-            itemWorld.DestroySelf();
+            if (itemWorld != null)
+            {
+                item = itemWorld.GetItem();
+                inventory.AddItem(item);
+                itemWorld.DestroySelf();
+            }
+        }
+        else
+        {
+            if (inventory.GetItemList().Count == 9)
+            {
+                if (itemWorld != null)
+                {
+                    item = itemWorld.GetItem();
+                    if (item.IsStackble())
+                    {
+                        foreach (Item item2 in inventory.GetItemList())
+                        {
+                            if (item.itemType == item2.itemType)
+                            {
+                                inventory.AddItem(itemWorld.GetItem());
+                                itemWorld.DestroySelf();
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -77,6 +124,69 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void distroyBlock()
+    {
+        
+        switch (FindObjectOfType<InventoryUi>().itemType)
+        {
+            case "picklvl0": pickMultiplier = 1; break;
+            case "picklvl1": pickMultiplier = 2; break;
+            case "picklvl2": pickMultiplier = 3; break;
+            case "picklvl3": pickMultiplier = 4; break;
+            case "picklvl4": pickMultiplier = 5; break;
+            default: pickMultiplier = 1; break;
+        }
+        if (FindObjectOfType<InventoryUi>().canRemove == true)
+        {
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                int px = Mathf.RoundToInt(player.transform.position.x);
+                int py = Mathf.RoundToInt(player.transform.position.y) - 1;
+                coordXToDistroy = px;
+                coordYToDistroy = py;
+                
+
+                RectTransform rectTransform = Instantiate(BlankBlockTamplate, BlocksContainer).GetComponent<RectTransform>();
+                rectTransform.gameObject.SetActive(true);
+                rectTransform.anchoredPosition = new Vector2(px, py);
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                int px = Mathf.RoundToInt(player.transform.position.x)+1;
+                int py = Mathf.RoundToInt(player.transform.position.y);
+                coordXToDistroy = px;
+                coordYToDistroy = py;
+
+                RectTransform rectTransform = Instantiate(BlankBlockTamplate, BlocksContainer).GetComponent<RectTransform>();
+                rectTransform.gameObject.SetActive(true);
+                rectTransform.anchoredPosition = new Vector2(px, py);
+            }
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                int px = Mathf.RoundToInt(player.transform.position.x) - 1;
+                int py = Mathf.RoundToInt(player.transform.position.y);
+                coordXToDistroy = px;
+                coordYToDistroy = py;
+
+                RectTransform rectTransform = Instantiate(BlankBlockTamplate, BlocksContainer).GetComponent<RectTransform>();
+                rectTransform.gameObject.SetActive(true);
+                rectTransform.anchoredPosition = new Vector2(px, py);
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                int px = Mathf.RoundToInt(player.transform.position.x);
+                int py = Mathf.RoundToInt(player.transform.position.y)+1;
+                coordXToDistroy = px;
+                coordYToDistroy = py;
+
+                RectTransform rectTransform = Instantiate(BlankBlockTamplate, BlocksContainer).GetComponent<RectTransform>();
+                rectTransform.gameObject.SetActive(true);
+                rectTransform.anchoredPosition = new Vector2(px, py);
+            }
+        }
+    }
+
+
     void Update()
     {
         transform.rotation = Quaternion.identity;
@@ -101,22 +211,28 @@ public class PlayerMovement : MonoBehaviour
             switch (itemType)
             {
                 default:
-                case "ladder":  dItem = new Item { itemType = Item.ItemType.Ladder, amount = dAmount }; break;
-                case "pick":    dItem = new Item { itemType = Item.ItemType.Pick, amount = dAmount };   break;
-                case "mud":     dItem = new Item { itemType = Item.ItemType.Mud, amount = dAmount };    break;
-                case "stone":   dItem = new Item { itemType = Item.ItemType.Stone, amount = dAmount };  break;
-                case "dirt":    dItem = new Item { itemType = Item.ItemType.Dirt, amount = dAmount };   break;
-                case "coin":    dItem = new Item { itemType = Item.ItemType.Coin, amount = dAmount };   break;
-                case "sand":    dItem = new Item { itemType = Item.ItemType.Sand, amount = dAmount };   break;
+                case "ladder":      dItem = new Item { itemType = Item.ItemType.Ladder, amount = dAmount }; break;
+                case "picklvl0":    dItem = new Item { itemType = Item.ItemType.PickLvL0, amount = dAmount }; break;
+                case "picklvl1":    dItem = new Item { itemType = Item.ItemType.PickLvL1, amount = dAmount }; break;
+                case "picklvl2":    dItem = new Item { itemType = Item.ItemType.PickLvL2, amount = dAmount }; break;
+                case "picklvl3":    dItem = new Item { itemType = Item.ItemType.PickLvL3, amount = dAmount }; break;
+                case "picklvl4":    dItem = new Item { itemType = Item.ItemType.PickLvL4, amount = dAmount }; break;
+                case "dirt":        dItem = new Item { itemType = Item.ItemType.Dirt, amount = dAmount }; break;
+                case "stone":       dItem = new Item { itemType = Item.ItemType.Stone, amount = dAmount };  break;
+                case "coal":        dItem = new Item { itemType = Item.ItemType.Coal, amount = dAmount }; break;
+                case "iron":        dItem = new Item { itemType = Item.ItemType.Iron, amount = dAmount }; break;
+                case "gold":        dItem = new Item { itemType = Item.ItemType.Gold, amount = dAmount }; break;
+                case "diamond":     dItem = new Item { itemType = Item.ItemType.Diamond, amount = dAmount }; break;
+                case "coin":        dItem = new Item { itemType = Item.ItemType.Coin, amount = dAmount };   break;
             }
             inventory.RemoveItem(dItem);
             var px = Mathf.RoundToInt(player.transform.position.x);
             var py = Mathf.RoundToInt(player.transform.position.y);
-            var dropPos = new Vector3Int(px-2, py, 0);
+            var dropPos = new Vector3Int(px-1, py, 0);
             ItemWorld.DropItem(dropPos, dItem);
             FindObjectOfType<InventoryUi>().inventorySlot = 1;
         }
-
+        distroyBlock();
         placeItem();
     }
 

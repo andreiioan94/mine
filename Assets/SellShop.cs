@@ -27,21 +27,29 @@ public class SellShop : MonoBehaviour
             switch (type)
             {
                 default:                    break;
-                case Item.ItemType.Dirt:    coinAmount = 2; 
+                case Item.ItemType.Dirt:    coinAmount = 1; 
+                                            itemWorld.DestroySelf(); 
+                                            ItemWorld.SpawnItemWorld(new Vector3Int(-8, -3, 0), new Item { itemType = Item.ItemType.Coin, amount = coinAmount * itemAmount }); 
+                                            break;
+                case Item.ItemType.Stone:   coinAmount = 2; 
                                             itemWorld.DestroySelf(); 
                                             ItemWorld.SpawnItemWorld(new Vector3Int(-8, -2, 0), new Item { itemType = Item.ItemType.Coin, amount = coinAmount * itemAmount }); 
                                             break;
-                case Item.ItemType.Sand:    coinAmount = 1; 
+                case Item.ItemType.Coal:     coinAmount = 1; 
                                             itemWorld.DestroySelf(); 
                                             ItemWorld.SpawnItemWorld(new Vector3Int(-8, -2, 0), new Item { itemType = Item.ItemType.Coin, amount = coinAmount * itemAmount }); 
                                             break;
-                case Item.ItemType.Stone:   coinAmount = 5; 
-                                            itemWorld.DestroySelf(); 
-                                            ItemWorld.SpawnItemWorld(new Vector3Int(-8, -2, 0), new Item { itemType = Item.ItemType.Coin, amount = coinAmount * itemAmount }); 
+                case Item.ItemType.Iron:    coinAmount = 1;
+                                            itemWorld.DestroySelf();
+                                            ItemWorld.SpawnItemWorld(new Vector3Int(-8, -2, 0), new Item { itemType = Item.ItemType.Coin, amount = coinAmount * itemAmount });
                                             break;
-                case Item.ItemType.Mud:     coinAmount = 3; 
-                                            itemWorld.DestroySelf(); 
-                                            ItemWorld.SpawnItemWorld(new Vector3Int(-8, -2, 0), new Item { itemType = Item.ItemType.Coin, amount = coinAmount * itemAmount }); 
+                case Item.ItemType.Gold:    coinAmount = 1;
+                                            itemWorld.DestroySelf();
+                                            ItemWorld.SpawnItemWorld(new Vector3Int(-8, -2, 0), new Item { itemType = Item.ItemType.Coin, amount = coinAmount * itemAmount });
+                                            break;
+                case Item.ItemType.Diamond: coinAmount = 1;
+                                            itemWorld.DestroySelf();
+                                            ItemWorld.SpawnItemWorld(new Vector3Int(-8, -2, 0), new Item { itemType = Item.ItemType.Coin, amount = coinAmount * itemAmount });
                                             break;
             }
             

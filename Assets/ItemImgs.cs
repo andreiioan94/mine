@@ -13,11 +13,18 @@ public class ItemImgs : MonoBehaviour
 
     public Transform pfItemWorld;
 
-    public Sprite sand;
     public Sprite dirt;
     public Sprite stone;
+    public Sprite coal;
+    public Sprite iron;
+    public Sprite gold;
+    public Sprite diamond;
     public Sprite coin;
     public Sprite mud;
-    public Sprite pick;
+    public Sprite picklvl0;
+    public Sprite picklvl1;
+    public Sprite picklvl2;
+    public Sprite picklvl3;
+    public Sprite picklvl4;
     public Sprite ladder;
 }

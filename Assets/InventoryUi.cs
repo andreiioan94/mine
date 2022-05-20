@@ -6,6 +6,7 @@ using TMPro;
 
 public class InventoryUi : MonoBehaviour
 {
+    private GameObject inventoryUi;
     private Inventory inventory;
     private Transform itemSlotContainer;
     private Transform itemSlotTamplate;
@@ -19,10 +20,10 @@ public class InventoryUi : MonoBehaviour
     private void Awake()
     {
         inventorySlot = 1;
-        //itemSlotContainer = transform.Find("itemSlotContainer");
-        itemSlotContainer = this.gameObject.transform.GetChild(0).GetChild(2);
+        inventoryUi = GameObject.Find("InventoryUI");
+        itemSlotContainer = inventoryUi.transform.GetChild(0).GetChild(2);
         //Debug.Log(itemSlotContainer);
-        itemSlotTamplate = this.gameObject.transform.GetChild(0).GetChild(2).GetChild(0);
+        itemSlotTamplate = inventoryUi.transform.GetChild(0).GetChild(2).GetChild(0);
         //Debug.Log(itemSlotTamplate);
     }
 
@@ -74,6 +75,10 @@ public class InventoryUi : MonoBehaviour
         {
             inventorySlot = 8;
         }
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            inventorySlot = 9;
+        }
         if (inventorySlot > inventory.GetItemList().Count)
         {
             inventorySlot = 1;
@@ -103,8 +108,17 @@ public class InventoryUi : MonoBehaviour
         itemSlotSelected = this.gameObject.transform.GetChild(0).GetChild(2).GetChild(inventorySlot);
         RectTransform itemSlotRectTransform = itemSlotSelected.GetComponent<RectTransform>();
         Image image = itemSlotRectTransform.Find("itemImg").GetComponent<Image>();
-        Item validItem = new Item { itemType = Item.ItemType.Pick, amount = 1 };
-        if (image.sprite == validItem.GetSprite())
+        Item validItem1 = new Item { itemType = Item.ItemType.PickLvL0, amount = 1 };
+        
+        Item validItem2 = new Item { itemType = Item.ItemType.PickLvL1, amount = 1 };
+       
+        Item validItem3 = new Item { itemType = Item.ItemType.PickLvL2, amount = 1 };
+        
+        Item validItem4 = new Item { itemType = Item.ItemType.PickLvL3, amount = 1 };
+        
+        Item validItem5 = new Item { itemType = Item.ItemType.PickLvL4, amount = 1 };
+
+        if (image.sprite == validItem1.GetSprite() || image.sprite == validItem2.GetSprite() || image.sprite == validItem3.GetSprite() || image.sprite == validItem4.GetSprite() || image.sprite == validItem5.GetSprite())
         {
             canRemove = true;
         }
@@ -137,10 +151,30 @@ public class InventoryUi : MonoBehaviour
         RectTransform itemSlotRectTransform = itemSlotSelected.GetComponent<RectTransform>();
         Image image = itemSlotRectTransform.Find("itemImg").GetComponent<Image>();
         
-        Item pickItem = new Item { itemType = Item.ItemType.Pick, amount = 1 };
+        Item pickItem = new Item { itemType = Item.ItemType.PickLvL0, amount = 1 };
         if (image.sprite == pickItem.GetSprite())
         {
-            itemType = "pick";
+            itemType = "picklvl0";
+        }
+        pickItem = new Item { itemType = Item.ItemType.PickLvL1, amount = 1 };
+        if (image.sprite == pickItem.GetSprite())
+        {
+            itemType = "picklvl1";
+        }
+        pickItem = new Item { itemType = Item.ItemType.PickLvL2, amount = 1 };
+        if (image.sprite == pickItem.GetSprite())
+        {
+            itemType = "picklvl2";
+        }
+        pickItem = new Item { itemType = Item.ItemType.PickLvL3, amount = 1 };
+        if (image.sprite == pickItem.GetSprite())
+        {
+            itemType = "picklvl3";
+        }
+        pickItem = new Item { itemType = Item.ItemType.PickLvL4, amount = 1 };
+        if (image.sprite == pickItem.GetSprite())
+        {
+            itemType = "picklvl4";
         }
 
         Item dirtItem = new Item { itemType = Item.ItemType.Dirt, amount = 1 };
@@ -149,16 +183,31 @@ public class InventoryUi : MonoBehaviour
             itemType = "dirt";
         }
 
-        Item sandItem = new Item { itemType = Item.ItemType.Sand, amount = 1 };
-        if (image.sprite == sandItem.GetSprite())
+        Item stoneItem = new Item { itemType = Item.ItemType.Stone, amount = 1 };
+        if (image.sprite == stoneItem.GetSprite())
         {
-            itemType = "sand";
+            itemType = "stone";
         }
 
-        Item mudItem = new Item { itemType = Item.ItemType.Mud, amount = 1 };
-        if (image.sprite == mudItem.GetSprite())
+        Item coalItem = new Item { itemType = Item.ItemType.Coal, amount = 1 };
+        if (image.sprite == coalItem.GetSprite())
         {
-            itemType = "mud";
+            itemType = "coal";
+        }
+        Item ironItem = new Item { itemType = Item.ItemType.Iron, amount = 1 };
+        if (image.sprite == ironItem.GetSprite())
+        {
+            itemType = "iron";
+        }
+        Item goldItem = new Item { itemType = Item.ItemType.Gold, amount = 1 };
+        if (image.sprite == goldItem.GetSprite())
+        {
+            itemType = "gold";
+        }
+        Item diamondItem = new Item { itemType = Item.ItemType.Diamond, amount = 1 };
+        if (image.sprite == diamondItem.GetSprite())
+        {
+            itemType = "diamond";
         }
 
         Item coinItem = new Item { itemType = Item.ItemType.Coin, amount = 1 };
@@ -172,6 +221,8 @@ public class InventoryUi : MonoBehaviour
         {
             itemType = "ladder";
         }
+
+        
 
         TextMeshProUGUI uiText = itemSlotRectTransform.Find("amount").GetComponent<TextMeshProUGUI>();
         int.TryParse(uiText.text, out itemAmount);
@@ -191,10 +242,10 @@ public class InventoryUi : MonoBehaviour
         }
         int x = 0;
         int y = 0;
-        float xSize = 34.5522f;
-        float ySize = 35.8354f;
-        float xdif = -436.5487f;
-        float ydif = 234.4f;
+        float xSize = 33f;
+        float ySize = 33f;
+        float xdif = -348.4f;
+        float ydif = 204.0f;
         foreach (Item item in inventory.GetItemList())
         {
             RectTransform itemSlotRectTransform = Instantiate(itemSlotTamplate, itemSlotContainer).GetComponent<RectTransform>();
